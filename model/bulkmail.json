@@ -1,0 +1,98 @@
+{
+    "app": "BulkMail",
+    "name": "bulkmail",
+    "namespace": "LuzernTourismus\\BulkMail",
+    "is_deleted": false,
+    "model": [
+        {
+            "template": "default",
+            "model_id": "cd28c26c-408b-461e-841f-3e0270c906eb",
+            "label": "Mailing",
+            "class_name": "Mailing",
+            "table_name": "bulkmail_mailing",
+            "namespace": "LuzernTourismus\\BulkMail\\Data\\Mailing",
+            "row_class_name": "",
+            "primary_index": "auto_increment",
+            "is_deleted": false,
+            "type": [
+                {
+                    "type": "text",
+                    "label": "Mailing",
+                    "field_name": "mailing",
+                    "variable_name": "mailing",
+                    "allow_null": false,
+                    "is_deleted": false,
+                    "length": "255"
+                },
+                {
+                    "type": "text",
+                    "label": "Subject",
+                    "field_name": "subject",
+                    "variable_name": "subject",
+                    "allow_null": false,
+                    "is_deleted": false,
+                    "length": "255"
+                },
+                {
+                    "type": "large_text",
+                    "label": "Text",
+                    "field_name": "text",
+                    "variable_name": "text",
+                    "allow_null": false,
+                    "is_deleted": false
+                },
+                {
+                    "type": "text",
+                    "label": "Mail From",
+                    "field_name": "mail_from",
+                    "variable_name": "mailFrom",
+                    "allow_null": false,
+                    "is_deleted": false,
+                    "length": "255"
+                }
+            ],
+            "index": []
+        },
+        {
+            "template": "default",
+            "model_id": "3d92e63e-b567-4ed9-9447-c1d95a2f2883",
+            "label": "Recipient",
+            "class_name": "Recipient",
+            "table_name": "bulkmail_recipient",
+            "namespace": "LuzernTourismus\\BulkMail\\Data\\Recipient",
+            "row_class_name": "",
+            "primary_index": "auto_increment",
+            "is_deleted": false,
+            "type": [
+                {
+                    "type": "external",
+                    "label": "Mailing",
+                    "field_name": "mailing",
+                    "variable_name": "mailing",
+                    "allow_null": false,
+                    "is_deleted": false,
+                    "external_model_id": "cd28c26c-408b-461e-841f-3e0270c906eb"
+                },
+                {
+                    "type": "text",
+                    "label": "eMail",
+                    "field_name": "email",
+                    "variable_name": "email",
+                    "allow_null": false,
+                    "is_deleted": false,
+                    "length": "255"
+                }
+            ],
+            "index": [
+                {
+                    "index_name": "mailing_email",
+                    "index_type": "unique_index",
+                    "field_name": [
+                        "mailing",
+                        "email"
+                    ]
+                }
+            ]
+        }
+    ]
+}

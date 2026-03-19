@@ -1,0 +1,20 @@
+{
+    "name": "luzerntourismus/bulkmail",
+    "description": "Send Bulk Mail with Microsoft Graph Api",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LuzernTourismus\\BulkMail\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Urs Lang",
+            "email": "urs.lang@luzern.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "nemundo/framework": "dev-master"
+    }
+}
