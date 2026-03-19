@@ -4,18 +4,20 @@ namespace LuzernTourismus\BulkMail\Mail;
 
 use LuzernTourismus\BulkMail\Data\Mailing\MailingReader;
 use LuzernTourismus\BulkMail\Data\Recipient\RecipientReader;
-use Nemundo\App\Mail\Message\Attachment\InlineImageAttachment;
 use Nemundo\Core\Base\AbstractBase;
 use Nemundo\Core\Debug\Debug;
+use Nemundo\Core\Json\JsonText;
+use Nemundo\Core\Json\Reader\JsonReader;
+use Nemundo\Core\WebRequest\BearerAuthentication\JsonBearerAuthenticationWebRequest;
+use Nemundo\Core\WebRequest\Curl\CurlWebRequest;
+use Nemundo\Core\WebRequest\Json\JsonCurlWebRequest;
 use Nemundo\Project\Config\ProjectConfigReader;
 
 class MailSend extends AbstractBase
 {
 
-
     public function send($mailingId)
     {
-
 
         $tenantId = (new ProjectConfigReader())->getValue('m365_tenant_id');
         $clientId = (new ProjectConfigReader())->getValue('m365_client_id');
@@ -29,7 +31,26 @@ class MailSend extends AbstractBase
             'grant_type' => 'client_credentials'
         ];
 
-        $ch = curl_init($tokenUrl);
+        $tokenRequest = new CurlWebRequest();  // new JsonCurlWebRequest();
+
+
+        $postData2= http_build_query($postData);
+        //(new Debug())->write($postData2);
+
+        $tokeResponse = $tokenRequest->postUrl($tokenUrl, $postData2);
+
+        $tokenJson = (new JsonReader())->fromText($tokeResponse->html)->getData();
+
+        $token = null;
+        if (isset($tokenJson['access_token'])) {
+            $token = $tokenJson['access_token'];
+        } else {
+            (new Debug())->write('No valid token');
+            (new Debug())->write($tokeResponse);
+        }
+
+
+        /*$ch = curl_init($tokenUrl);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => http_build_query($postData),
@@ -45,6 +66,10 @@ class MailSend extends AbstractBase
         if (!$token) {
             die("No access token received. Response: $response");
         }
+
+        (new Debug())->write($token);
+
+        exit;*/
 
         $mailingRow = (new MailingReader())->getRowById($mailingId);
 
@@ -250,9 +275,12 @@ class MailSend extends AbstractBase
             ];
 
 
+            $request = new JsonBearerAuthenticationWebRequest();
+            $request->bearerAuthentication = $token;
+            $request->postUrl($graphEndpoint, (new JsonText())->addData($payload)->getJson());
 
 
-            $ch = curl_init($graphEndpoint);
+            /*$ch = curl_init($graphEndpoint);
             curl_setopt_array($ch, [
                 CURLOPT_POST => true,
                 CURLOPT_HTTPHEADER => [
@@ -267,7 +295,7 @@ class MailSend extends AbstractBase
             if ($resp === false || $httpCode >= 300) {
                 die("Send failed. HTTP $httpCode. Response: $resp Error: " . curl_error($ch));
             }
-            curl_close($ch);
+            curl_close($ch);*/
 
 
         }

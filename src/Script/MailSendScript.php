@@ -15,7 +15,7 @@ class MailSendScript extends AbstractConsoleScript
     public function run()
     {
 
-        (new MailSend())->send(3);
+        (new MailSend())->send(1);
 
 
     }
